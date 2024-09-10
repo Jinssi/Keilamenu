@@ -1,0 +1,92 @@
+from flask import Flask, render_template
+import requests
+import re
+from bs4 import BeautifulSoup
+from datetime import datetime
+
+app = Flask(__name__)
+
+def scrape_sodexo(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    meals = []
+    # Find the div with id="tabs-0"
+    tabs_div = soup.find('div', id='tabs-0')
+    if tabs_div:
+        # Find all div elements with class="mealrow"
+        mealrows = tabs_div.find_all('div', class_='mealrow')
+        for mealrow in mealrows:
+            # Find the div with class="meal-wrapper" within each mealrow
+            meal_wrapper = mealrow.find('div', class_='meal-wrapper')
+            if meal_wrapper:
+                # Find all p elements with class="meal-name" within the meal-wrapper
+                meal_names = meal_wrapper.find_all('p', class_='meal-name')
+                for meal_name in meal_names:
+                    meals.append({'name': meal_name.get_text(strip=True)})
+    return meals
+
+def scrape_iss(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    meals = []
+    
+    # Find the English section by looking for the h2 element with text starting with "Week"
+    english_section = soup.find('h2', class_='lunch-menu__title multiple js-lunch-menu-toggle', text=lambda t: t and t.startswith('Week'))
+    if english_section:
+        # Get the parent article of the English section
+        english_menu = english_section.find_next('article', class_='lunch-menu')
+        if english_menu:
+            # Get the current day of the week (0=Monday, 6=Sunday)
+            current_day_index = datetime.now().weekday()
+        if current_day_index < 5:  # Only consider weekdays
+            meal_days = english_menu.find_all('div', class_='lunch-menu__day')
+            current_day = meal_days[current_day_index]
+            meal_items = current_day.find_all('p')
+            for item in meal_items:
+                meal_text = item.get_text(strip=True)
+                if meal_text:
+                    meals.append({'name': meal_text})
+    return meals
+
+def scrape_compass(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    meals = []
+    # Find the item tag in the RSS feed
+    item = soup.find('item')
+    if item:
+        # Find the description tag within the item
+        description = item.find('description')
+        if description:
+            # Get the description content as is
+            description_content = description.get_text().strip()
+            # Remove text before "€:" using regex
+            description_content = re.sub(r'^.*?€:', '', description_content, flags=re.DOTALL).strip()
+            # Replace multiple <br> tags with a single newline
+            description_content = re.sub(r'(<br\s*/?>\s*)+', '\n', description_content)
+            # Split the description content by newlines and append each line as a separate meal entry
+            for line in description_content.split('\n'):
+                line = line.strip()
+                if line:
+                    meals.append({'name': line})
+    return meals
+
+@app.route('/')
+def index():
+    urls = [
+        'https://www.sodexo.fi/en/restaurants/ravintola-foodhub-ab',
+        'https://fg.ravintolapalvelut.iss.fi/',
+        'https://www.compass-group.fi/menuapi/feed/rss/current-day?costNumber=3283&language=en']
+    menus = []
+    for url in urls:
+        if 'sodexo' in url:
+            menus.append(scrape_sodexo(url))
+        elif 'iss' in url:
+            menus.append(scrape_iss(url))
+        elif 'compass-group' in url:
+            menus.append(scrape_compass(url))
+    restaurant_names = ['Sodexo', 'ISS', 'Compass Group']
+    return render_template('index.html', menus=menus, restaurant_names=restaurant_names, zip=zip)
+
+if __name__ == '__main__':
+    app.run(debug=True)

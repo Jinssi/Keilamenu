@@ -1,0 +1,51 @@
+body {
+    background-color: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    font-family: 'Impact', sans-serif;
+    font-size: 4em; /* Increased font size */
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.container {
+    display: flex;
+    justify-content: space-around;
+    width: 90%;
+}
+
+.menu {
+    background-color: #6a0b0b;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px;
+    width: 30%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center; /* Center text under each restaurant */
+}
+
+.menu h2 {
+    text-align: center;
+    font-size: 2em; /* Increased font size */
+    margin-bottom: 10px;
+}
+
+.mealrow {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #555; /* Add a separator line */
+    padding-bottom: 10px;
+}
+
+.mealrow p {
+    margin: 0;
+    line-height: 1.5;
+    font-size: 1.5em; /* Increased font size */
+}
