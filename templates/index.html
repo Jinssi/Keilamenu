@@ -6,12 +6,27 @@
     <title>Downstairs today</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
-<body>
-    <h1>Downstairs today</h1>
+<body class="{{ 'mobile' if is_mobile else 'desktop' }}">
+    <div class="header-container">
+        <div class="header">
+            <h1>Downstairs today</h1>
+            <div class="weekday">{{ current_weekday }}</div>
+        </div>
+    </div>
     <div class="container">
         {% for menu, name in zip(menus, restaurant_names) %}
             <div class="menu">
-                <h2>{{ name }}</h2>
+                {% if 'ISS' in name %}
+                    <img src="{{ url_for('static', filename='isslogo.png') }}" alt="ISS logo" class="logo">
+                {% elif 'Sodexo' in name %}
+                    <img src="{{ url_for('static', filename='sodexologo.png') }}" alt="Sodexo logo" class="logo">
+                {% elif 'Compass Group' in name %}
+                    <img src="{{ url_for('static', filename='compassgrouplogo.png') }}" alt="Compass Group logo" class="logo">
+                {% endif %}
+                <h2>
+                    <div class="restaurant-name">{{ name.split(' by ')[0] }}</div>
+                    <div class="company-name">by {{ name.split(' by ')[1] }}</div>
+                </h2>
                 {% for meal in menu %}
                     <div class="mealrow">
                         <p>{{ meal.name | replace('\n', '<br>') | safe }}</p>
@@ -20,5 +35,10 @@
             </div>
         {% endfor %}
     </div>
+    <div id="cookies-note" class="cookies-note">
+        <p>This site does not use cookies. This notification here is to tell you that. If you read this, say "yes" out loud.</p>
+        <button id="cookies-button" class="cookies-button">Got it!</button>
+    </div>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 </body>
 </html>

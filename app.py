@@ -6,25 +6,6 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-def scrape_sodexo(url):
-    response = requests.get(url)
-    soup = BeautifulSoup(response.content, 'html.parser')
-    meals = []
-    # Find the div with id="tabs-0"
-    tabs_div = soup.find('div', id='tabs-0')
-    if tabs_div:
-        # Find all div elements with class="mealrow"
-        mealrows = tabs_div.find_all('div', class_='mealrow')
-        for mealrow in mealrows:
-            # Find the div with class="meal-wrapper" within each mealrow
-            meal_wrapper = mealrow.find('div', class_='meal-wrapper')
-            if meal_wrapper:
-                # Find all p elements with class="meal-name" within the meal-wrapper
-                meal_names = meal_wrapper.find_all('p', class_='meal-name')
-                for meal_name in meal_names:
-                    meals.append({'name': meal_name.get_text(strip=True)})
-    return meals
-
 def scrape_iss(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
@@ -46,6 +27,31 @@ def scrape_iss(url):
                 meal_text = item.get_text(strip=True)
                 if meal_text:
                     meals.append({'name': meal_text})
+    return meals
+
+def scrape_sodexo(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    meals = []
+    
+    # Get the current weekday (0=Monday, 1=Tuesday, ..., 4=Friday)
+    current_weekday = datetime.today().weekday()
+    
+    # Only consider weekdays (Monday to Friday)
+    if current_weekday < 5:
+        # Find the div with id="tabs-X" where X is the current weekday
+        tabs_div = soup.find('div', id=f'tabs-{current_weekday}')
+        if tabs_div:
+            # Find all div elements with class="mealrow"
+            mealrows = tabs_div.find_all('div', class_='mealrow')
+            for mealrow in mealrows:
+                # Find the div with class="meal-wrapper" within each mealrow
+                meal_wrapper = mealrow.find('div', class_='meal-wrapper')
+                if meal_wrapper:
+                    # Find all p elements with class="meal-name" within the meal-wrapper
+                    meal_names = meal_wrapper.find_all('p', class_='meal-name')
+                    for meal_name in meal_names:
+                        meals.append({'name': meal_name.get_text(strip=True)})
     return meals
 
 def scrape_compass(url):
@@ -74,9 +80,10 @@ def scrape_compass(url):
 @app.route('/')
 def index():
     urls = [
-        'https://www.sodexo.fi/en/restaurants/ravintola-foodhub-ab',
         'https://fg.ravintolapalvelut.iss.fi/',
-        'https://www.compass-group.fi/menuapi/feed/rss/current-day?costNumber=3283&language=en']
+        'https://www.sodexo.fi/en/restaurants/ravintola-foodhub-ab',
+        'https://www.compass-group.fi/menuapi/feed/rss/current-day?costNumber=3283&language=en'
+    ]
     menus = []
     for url in urls:
         if 'sodexo' in url:
@@ -85,8 +92,12 @@ def index():
             menus.append(scrape_iss(url))
         elif 'compass-group' in url:
             menus.append(scrape_compass(url))
-    restaurant_names = ['Sodexo', 'ISS', 'Compass Group']
-    return render_template('index.html', menus=menus, restaurant_names=restaurant_names, zip=zip)
+    restaurant_names = ['FG by ISS', 'FoodHub by Sodexo', 'Keila Cafe by Compass Group']
+    
+    # Get the current weekday name
+    current_weekday = datetime.today().strftime('%A')
+    
+    return render_template('index.html', menus=menus, restaurant_names=restaurant_names, current_weekday=current_weekday, zip=zip)
 
 if __name__ == '__main__':
     app.run(debug=True)

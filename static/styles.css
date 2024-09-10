@@ -2,24 +2,41 @@ body {
     background-color: #000;
     color: #fff;
     font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     margin: 0;
     padding: 20px;
 }
 
+.header-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    width: 90%; /* Match the width of the container */
+    align-items: center;
+}
+
 h1 {
-    font-family: 'Impact', sans-serif;
-    font-size: 4em; /* Increased font size */
-    text-align: center;
-    margin-bottom: 20px;
+    font-family: 'Segoe UI Semibold', sans-serif;
+    font-size: 6vw; /* Scale font size relative to viewport width */
+    margin: 0;
+}
+
+.weekday {
+    font-family: 'Segoe UI Semibold', sans-serif;
+    font-size: 3vw; /* Scale font size relative to viewport width */
+    text-align: right;
 }
 
 .container {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-around;
-    width: 90%;
+    width: 90%; /* Match the width of the header */
+    margin: 0 auto; /* Center the container */
 }
 
 .menu {
@@ -32,20 +49,108 @@ h1 {
     text-align: center; /* Center text under each restaurant */
 }
 
-.menu h2 {
-    text-align: center;
-    font-size: 2em; /* Increased font size */
+.logo {
+    width: 100px; /* Adjust the size as needed */
+    height: auto;
     margin-bottom: 10px;
+}
+
+h2 {
+    font-family: 'Segoe UI Semibold', sans-serif;
+    font-size: 4vw; /* Scale font size relative to viewport width */
+    margin: 0;
+}
+
+.restaurant-name {
+    font-size: 4vw; /* Larger font size for restaurant name */
+}
+
+.company-name {
+    font-size: 2.5vw; /* Smaller font size for company name */
+    margin-bottom: 30px;
 }
 
 .mealrow {
     margin-bottom: 10px;
     border-bottom: 1px solid #555; /* Add a separator line */
     padding-bottom: 10px;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 3vw; /* Scale font size relative to viewport width */
 }
 
 .mealrow p {
     margin: 0;
     line-height: 1.5;
-    font-size: 1.5em; /* Increased font size */
+}
+
+/* Media query for wider screens */
+@media (min-width: 1024px) {
+    h1 {
+        font-size: 48px; /* Fixed font size for larger screens */
+    }
+
+    .weekday {
+        font-size: 24px; /* Fixed font size for larger screens */
+    }
+
+    h2 {
+        font-size: 32px; /* Fixed font size for larger screens */
+    }
+
+    .restaurant-name {
+        font-size: 32px; /* Fixed font size for larger screens */
+    }
+
+    .company-name {
+        font-size: 20px; /* Fixed font size for larger screens */
+    }
+
+    .mealrow {
+        font-size: 24px; /* Fixed font size for larger screens */
+    }
+}
+
+/* Media query for aspect ratio */
+@media (max-width: 1024px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .menu {
+        width: 90%;
+    }
+}
+
+/* Styles for the cookies note */
+.cookies-note {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    z-index: 1000;
+    border-radius: 10px 10px 0 0;
+}
+
+.cookies-button {
+    background-color: #fff;
+    color: #6a0b0b;
+    border: 2px solid #6a0b0b;
+    padding: 10px 20px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.cookies-button:hover {
+    background-color: #6a0b0b;
+    color: #fff;
 }
