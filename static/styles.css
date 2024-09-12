@@ -1,7 +1,21 @@
+@font-face {
+    font-family: 'Aptos Display';
+    src: url('./fonts/Barlow-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Aptos';
+    src: url('./fonts/Rubik-SemiBold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body {
-    background-color: #000;
-    color: #fff;
-    font-family: Arial, sans-serif;
+    background-color: #30343F; /* Darker background */
+    color: #FFD9DA; /* Light text color */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 20px;
 }
@@ -16,73 +30,117 @@ body {
     display: flex;
     justify-content: space-between;
     width: 90%; /* Match the width of the container */
-    align-items: center;
+
 }
 
 h1 {
-    font-family: 'Segoe UI Semibold', sans-serif;
+    font-family: 'Aptos Display', sans-serif;
     font-size: 6vw; /* Scale font size relative to viewport width */
     margin: 0;
+    color: #FFD9DA; /* Light color for header text */
 }
 
-.weekday {
-    font-family: 'Segoe UI Semibold', sans-serif;
-    font-size: 3vw; /* Scale font size relative to viewport width */
-    text-align: right;
+.date-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Add space between weekday and date */
+}
+
+.weekday, .date {
+    font-family: 'Aptos Display', sans-serif;
+    font-size: 2vw; /* Ensure consistent font size */
+    color: #FFD9DA; /* Light text color */
+    text-shadow: 1px 1px 2px #1B2021; /* Add shadow to text */
 }
 
 .container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
     width: 90%; /* Match the width of the header */
     margin: 0 auto; /* Center the container */
+    justify-content: center;
 }
-
 .menu {
-    background-color: #6a0b0b;
+    background-color: #EA638C ; /* Menu pink */
     border-radius: 10px;
     padding: 20px;
     margin: 10px;
     width: 30%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     text-align: center; /* Center text under each restaurant */
+    color: #1B2021; /* Text dark */
+    justify-content: center;
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 15vh; /* Use viewport height for scaling */
+    margin-bottom: 20px;
 }
 
 .logo {
-    width: 100px; /* Adjust the size as needed */
-    height: auto;
-    margin-bottom: 10px;
+    max-height: 100%; /* Ensure the logo fits within the container */
+    max-width: 100%; /* Ensure the logo maintains its aspect ratio */
 }
 
 h2 {
-    font-family: 'Segoe UI Semibold', sans-serif;
+    font-family: 'Aptos', sans-serif;
     font-size: 4vw; /* Scale font size relative to viewport width */
     margin: 0;
+    color: #1B2021; /* Text dark */
 }
 
 .restaurant-name {
+    font-family: 'Aptos Display', sans-serif;
     font-size: 4vw; /* Larger font size for restaurant name */
+    color: #FFD9DA;
 }
 
 .company-name {
+    font-family: 'Aptos', sans-serif;
     font-size: 2.5vw; /* Smaller font size for company name */
-    margin-bottom: 30px;
+    padding-bottom: 10px;
+    color: #FFD9DA;
+}
+
+body {
+    background-color: #30343F; /* Background grey */
+    color: #FFD9DA; /* Text light */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
 }
 
 .mealrow {
     margin-bottom: 10px;
-    border-bottom: 1px solid #555; /* Add a separator line */
     padding-bottom: 10px;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Aptos', sans-serif;
     font-size: 3vw; /* Scale font size relative to viewport width */
+    color: #1B2021; /* Text dark */
+    position: relative; /* Ensure the pseudo-element is positioned correctly */
+    display: flex;
+    justify-content: center; /* Center the content horizontally */
+    text-align: center; /* Center the text */
+}
+
+.mealrow:not(:last-child)::after {
+    content: '';
+    display: block;
+    width: 10%; /* Adjust the width to make the line shorter */
+    height: 3px; /* Height of the line */
+    background-color: #89023E; /* Mealrow line red */
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .mealrow p {
     margin: 0;
-    line-height: 1.5;
+    line-height: 2.2;
 }
-
 /* Media query for wider screens */
 @media (min-width: 1024px) {
     h1 {
@@ -139,9 +197,9 @@ h2 {
 }
 
 .cookies-button {
-    background-color: #fff;
-    color: #6a0b0b;
-    border: 2px solid #6a0b0b;
+    background-color: #100108; /* Match the theme color */
+    color: #1B2021; /* Dark text color */
+    border: 2px solid #FFD9DA; /* Dark border color */
     padding: 10px 20px;
     margin-top: 10px;
     cursor: pointer;
@@ -151,6 +209,6 @@ h2 {
 }
 
 .cookies-button:hover {
-    background-color: #6a0b0b;
-    color: #fff;
+    background-color: #1B2021; /* Dark background on hover */
+    color: #FFD9DA; /* Light text color on hover */
 }

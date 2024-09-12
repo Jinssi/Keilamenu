@@ -3,26 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Downstairs today</title>
+    <title>DOWNSTAIRS TODAY</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body class="{{ 'mobile' if is_mobile else 'desktop' }}">
     <div class="header-container">
         <div class="header">
             <h1>Downstairs today</h1>
-            <div class="weekday">{{ current_weekday }}</div>
+            <div class="date-container">
+                <div class="weekday">{{ current_weekday }}</div>
+                <div class="date">{{ current_date }}</div>
+            </div>
         </div>
     </div>
     <div class="container">
         {% for menu, name in zip(menus, restaurant_names) %}
             <div class="menu">
-                {% if 'ISS' in name %}
-                    <img src="{{ url_for('static', filename='isslogo.png') }}" alt="ISS logo" class="logo">
-                {% elif 'Sodexo' in name %}
-                    <img src="{{ url_for('static', filename='sodexologo.png') }}" alt="Sodexo logo" class="logo">
-                {% elif 'Compass Group' in name %}
-                    <img src="{{ url_for('static', filename='compassgrouplogo.png') }}" alt="Compass Group logo" class="logo">
-                {% endif %}
+                <div class="logo-container">
+                    {% if 'ISS' in name %}
+                        <img src="{{ url_for('static', filename='isslogo.png') }}" alt="ISS logo" class="logo">
+                    {% elif 'Sodexo' in name %}
+                        <img src="{{ url_for('static', filename='sodexologo.png') }}" alt="Sodexo logo" class="logo">
+                    {% elif 'Compass Group' in name %}
+                        <img src="{{ url_for('static', filename='compassgrouplogo.png') }}" alt="Compass Group logo" class="logo">
+                    {% endif %}
+                </div>
                 <h2>
                     <div class="restaurant-name">{{ name.split(' by ')[0] }}</div>
                     <div class="company-name">by {{ name.split(' by ')[1] }}</div>

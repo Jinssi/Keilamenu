@@ -96,8 +96,9 @@ def index():
     
     # Get the current weekday name
     current_weekday = datetime.today().strftime('%A')
+    current_date = datetime.now().strftime('%d.%m.')
     
-    return render_template('index.html', menus=menus, restaurant_names=restaurant_names, current_weekday=current_weekday, zip=zip)
+    return render_template('index.html', menus=menus, restaurant_names=restaurant_names, current_weekday=current_weekday, current_date=current_date, zip=zip)
 
 if __name__ == '__main__':
     app.run(debug=True)
