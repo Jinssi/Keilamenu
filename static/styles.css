@@ -1,186 +1,192 @@
 @font-face {
-    font-family: 'Aptos Display';
-    src: url('./fonts/Barlow-Bold.ttf') format('truetype');
+    font-family: 'GlacialIndifference';
+    src: url('./fonts/GlacialIndifference-Bold.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'Aptos';
-    src: url('./fonts/Rubik-SemiBold.ttf') format('truetype');
+    font-family: 'Poppins';
+    src: url('./fonts/Poppins-Medium.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 body {
-    background-color: #30343F; /* Darker background */
-    color: #FFD9DA; /* Light text color */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #F3DBDB; /* Creamy white background */
+    color: #dc143c; /* Main text color */
+    font-family: 'GlacialIndifference', sans-serif;
     margin: 0;
     padding: 20px;
+    text-align: center;
 }
 
 .header-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    width: 90%; /* Match the width of the container */
-
+    margin-bottom: 20px;
 }
 
 h1 {
-    font-family: 'Aptos Display', sans-serif;
-    font-size: 6vw; /* Scale font size relative to viewport width */
+    font-family: 'Poppins', sans-serif;
+    font-size: 6vw; /* Large font size */
+    color: #dc143c; /* Main text color */
+    text-transform: uppercase;
     margin: 0;
-    color: #FFD9DA; /* Light color for header text */
 }
 
-.date-container {
-    display: flex;
-    align-items: center;
-    gap: 10px; /* Add space between weekday and date */
+.date-info {
+    font-size: 2vw; /* Smaller font size */
+    color: #004aad; /* Details color */
+    text-transform: uppercase;
+    margin-top: 10px;
 }
 
-.weekday, .date {
-    font-family: 'Aptos Display', sans-serif;
-    font-size: 2vw; /* Ensure consistent font size */
-    color: #FFD9DA; /* Light text color */
-    text-shadow: 1px 1px 2px #1B2021; /* Add shadow to text */
+.separator {
+    border-top: 0.5vw dotted #dc143c; /* Red dotted line */
+    width: calc(100% - 60px); /* 30px short of edges */
+    margin: 60px auto; /* Empty space before and after */
 }
 
 .container {
     display: flex;
     flex-wrap: wrap;
-    width: 90%; /* Match the width of the header */
-    margin: 0 auto; /* Center the container */
     justify-content: center;
-}
-.menu {
-    background-color: #EA638C ; /* Menu pink */
-    border-radius: 10px;
-    padding: 20px;
-    margin: 10px;
-    width: 30%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    text-align: center; /* Center text under each restaurant */
-    color: #1B2021; /* Text dark */
-    justify-content: center;
+    gap: 20px;
 }
 
+.menu {
+    color: #ffffff; /* White text */
+    border: 0.3vw ridge #004aad; /* Blue border */
+    border-radius: 10px;
+    padding: 20px;
+    width: 30%;
+    text-align: center;
+}
+
+.logo-text-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Align items to the start */
+}
 .logo-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 15vh; /* Use viewport height for scaling */
+    height: 15vh;
     margin-bottom: 20px;
+    padding-right: 2vw;
 }
 
 .logo {
-    max-height: 100%; /* Ensure the logo fits within the container */
-    max-width: 100%; /* Ensure the logo maintains its aspect ratio */
+    max-height: 100%;
+    max-width: 100%;
 }
 
-h2 {
-    font-family: 'Aptos', sans-serif;
-    font-size: 4vw; /* Scale font size relative to viewport width */
-    margin: 0;
-    color: #1B2021; /* Text dark */
+.name-container {
+    color: #004aad;
+    flex-grow: 1;
+    padding-left: 1vw;
 }
 
 .restaurant-name {
-    font-family: 'Aptos Display', sans-serif;
-    font-size: 4vw; /* Larger font size for restaurant name */
-    color: #FFD9DA;
+    font-size: 2.5vw; /* Reduced by 20% */
+    margin-bottom: 10px;
+    text-align: left;
 }
 
 .company-name {
-    font-family: 'Aptos', sans-serif;
-    font-size: 2.5vw; /* Smaller font size for company name */
-    padding-bottom: 10px;
-    color: #FFD9DA;
+    font-size: 1vw; /* Reduced by 20% */
+    margin-bottom: 20px;
+    text-align: left;
 }
 
-body {
-    background-color: #30343F; /* Background grey */
-    color: #FFD9DA; /* Text light */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 20px;
+.meal-list {
+    background-color: #f5f5dc; /* Light background color */
+    padding: 10px;
+    border-radius: 10px;
 }
 
 .mealrow {
+    color: #dc143c; /* Red color */
+    text-transform: uppercase;
     margin-bottom: 10px;
-    padding-bottom: 10px;
-    font-family: 'Aptos', sans-serif;
-    font-size: 3vw; /* Scale font size relative to viewport width */
-    color: #1B2021; /* Text dark */
-    position: relative; /* Ensure the pseudo-element is positioned correctly */
-    display: flex;
-    justify-content: center; /* Center the content horizontally */
-    text-align: center; /* Center the text */
+    font-size: 0.75vw;
+    max-width: 60%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.mealrow:not(:last-child)::after {
-    content: '';
-    display: block;
-    width: 10%; /* Adjust the width to make the line shorter */
-    height: 3px; /* Height of the line */
-    background-color: #89023E; /* Mealrow line red */
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
+.meal-separator {
+    border-top: 0.3vw dotted #004aad; /* Blue line */
+    width: 2vw; /* Short line */
+    margin: 10px auto; /* Centered */
 }
 
-.mealrow p {
-    margin: 0;
-    line-height: 2.2;
-}
-/* Media query for wider screens */
-@media (min-width: 1024px) {
+
+/* Media Queries for Mobile Devices */
+@media (max-width: 768px) {
+    .header-container {
+        margin-bottom: 10px;
+    }
+
     h1 {
-        font-size: 48px; /* Fixed font size for larger screens */
+        font-size: 8vw; /* Adjust font size for mobile */
     }
 
-    .weekday {
-        font-size: 24px; /* Fixed font size for larger screens */
+    .date-info {
+        font-size: 4vw; /* Adjust font size for mobile */
     }
 
-    h2 {
-        font-size: 32px; /* Fixed font size for larger screens */
+    .separator {
+        border-top: 2px dotted #dc143c; /* Adjust line thickness for mobile */
+        width: calc(100% - 40px); /* Adjust width for mobile */
+        margin: 30px auto; /* Adjust margin for mobile */
     }
 
-    .restaurant-name {
-        font-size: 32px; /* Fixed font size for larger screens */
-    }
-
-    .company-name {
-        font-size: 20px; /* Fixed font size for larger screens */
-    }
-
-    .mealrow {
-        font-size: 24px; /* Fixed font size for larger screens */
-    }
-}
-
-/* Media query for aspect ratio */
-@media (max-width: 1024px) {
     .container {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .menu {
+        width: 90%; /* Adjust width for mobile */
+        padding: 10px; /* Adjust padding for mobile */
+    }
+
+    .logo-text-container {
         flex-direction: column;
         align-items: center;
     }
 
-    .menu {
-        width: 90%;
+    .logo-container {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .name-container {
+        padding-left: 0;
+        text-align: center;
+    }
+
+    .restaurant-name {
+        font-size: 5vw; /* Adjust font size for mobile */
+    }
+
+    .company-name {
+        font-size: 3vw; /* Adjust font size for mobile */
+    }
+
+    .mealrow {
+        font-size: 3vw; /* Adjust font size for mobile */
+        max-width: 100%; /* Allow full width for mobile */
+    }
+
+    .meal-separator {
+        border-top: 1vw dotted #004aad; /* Blue line */
+        width: 3vw; /* Adjust line width for mobile */
     }
 }
 
-/* Styles for the cookies note */
 .cookies-note {
     position: fixed;
     bottom: 0;
@@ -197,9 +203,9 @@ body {
 }
 
 .cookies-button {
-    background-color: #100108; /* Match the theme color */
-    color: #1B2021; /* Dark text color */
-    border: 2px solid #FFD9DA; /* Dark border color */
+    background-color: #100108;
+    color: #FFD9DA;
+    border: 2px solid #FFD9DA;
     padding: 10px 20px;
     margin-top: 10px;
     cursor: pointer;
@@ -209,6 +215,6 @@ body {
 }
 
 .cookies-button:hover {
-    background-color: #1B2021; /* Dark background on hover */
-    color: #FFD9DA; /* Light text color on hover */
+    background-color: #1B2021;
+    color: #FFD9DA;
 }

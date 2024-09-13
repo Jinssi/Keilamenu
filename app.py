@@ -19,14 +19,16 @@ def scrape_iss(url):
         if english_menu:
             # Get the current day of the week (0=Monday, 6=Sunday)
             current_day_index = datetime.now().weekday()
-        if current_day_index < 5:  # Only consider weekdays
-            meal_days = english_menu.find_all('div', class_='lunch-menu__day')
-            current_day = meal_days[current_day_index]
-            meal_items = current_day.find_all('p')
-            for item in meal_items:
-                meal_text = item.get_text(strip=True)
-                if meal_text:
-                    meals.append({'name': meal_text})
+            if current_day_index < 5:  # Only consider weekdays
+                meal_days = english_menu.find_all('div', class_='lunch-menu__day')
+                current_day = meal_days[current_day_index]
+                meal_items = current_day.find_all('p')
+                for item in meal_items:
+                    meal_text = item.get_text(strip=True)
+                    if meal_text:
+                        # Split the text at the colon and keep the part after it
+                        meal_name = meal_text.split(' : ', 1)[-1].strip()
+                        meals.append({'name': meal_name})
     return meals
 
 def scrape_sodexo(url):
@@ -96,7 +98,7 @@ def index():
     
     # Get the current weekday name
     current_weekday = datetime.today().strftime('%A')
-    current_date = datetime.now().strftime('%d.%m.')
+    current_date = datetime.now().strftime('%d.%m.%Y')
     
     return render_template('index.html', menus=menus, restaurant_names=restaurant_names, current_weekday=current_weekday, current_date=current_date, zip=zip)
 
