@@ -3,53 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DOWNSTAIRS TODAY</title>
+    <meta name="description" content="Daily lunch menus from three restaurants downstairs: FG by ISS, FoodHub by Sodexo, and Keila Cafe by Compass Group">
+    <title>DOWNSTAIRS TODAY - Daily Lunch Menus</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="header-container">
+    <!-- Skip to main content link for keyboard navigation -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <header class="header-container">
         <h1>DOWNSTAIRS TODAY</h1>
-        <div class="date-info">
-            <span class="weekday">{{ current_weekday }}</span>,
-            <span class="date">{{ current_date }}</span>
+        <div class="date-info" role="banner" aria-label="Current date and day">
+            <time datetime="{{ current_date }}">
+                <span class="weekday">{{ current_weekday }}</span>,
+                <span class="date">{{ current_date }}</span>
+            </time>
         </div>
-    </div>
-    <div class="separator"></div>
-    <div class="container">
+    </header>
+    
+    <div class="separator" role="presentation" aria-hidden="true"></div>
+    
+    <main id="main-content" class="container" role="main" aria-label="Restaurant lunch menus">
         {% for menu, name in zip(menus, restaurant_names) %}
-            <div class="menu">
+            <section class="menu" role="region" aria-labelledby="restaurant-{{ loop.index }}">
                 <div class="logo-text-container">
                     <div class="logo-container">
                         {% if 'ISS' in name %}
-                            <img src="{{ url_for('static', filename='isslogo.png') }}" alt="ISS logo" class="logo">
+                            <img src="{{ url_for('static', filename='isslogo.png') }}" alt="ISS company logo" class="logo" role="img" aria-describedby="restaurant-{{ loop.index }}">
                         {% elif 'Sodexo' in name %}
-                            <img src="{{ url_for('static', filename='sodexologo.png') }}" alt="Sodexo logo" class="logo">
+                            <img src="{{ url_for('static', filename='sodexologo.png') }}" alt="Sodexo company logo" class="logo" role="img" aria-describedby="restaurant-{{ loop.index }}">
                         {% elif 'Compass Group' in name %}
-                            <img src="{{ url_for('static', filename='compassgrouplogo.png') }}" alt="Compass Group logo" class="logo">
+                            <img src="{{ url_for('static', filename='compassgrouplogo.png') }}" alt="Compass Group company logo" class="logo" role="img" aria-describedby="restaurant-{{ loop.index }}">
                         {% endif %}
                     </div>
                     <div class="name-container">
-                        <div class="restaurant-name">{{ name.split(' by ')[0] }}</div>
-                        <div class="company-name">by {{ name.split(' by ')[1] }}</div>
+                        <h2 id="restaurant-{{ loop.index }}" class="restaurant-name">{{ name.split(' by ')[0] }}</h2>
+                        <p class="company-name">by {{ name.split(' by ')[1] }}</p>
                     </div>
                 </div>
-                <div class="meal-list">
-                    {% for meal in menu %}
-                        <div class="mealrow">
-                            <p>{{ meal.name | replace('\n', '<br>') | safe }}</p>
+                <div class="meal-list" role="list" aria-label="Menu items for {{ name }}">
+                    {% if menu %}
+                        {% for meal in menu %}
+                            <div class="mealrow" role="listitem">
+                                <p>{{ meal.name | replace('\n', '<br>') | safe }}</p>
+                            </div>
+                            {% if not loop.last %}
+                                <div class="meal-separator" role="presentation" aria-hidden="true"></div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <div class="mealrow" role="listitem">
+                            <p>No menu available for today</p>
                         </div>
-                        {% if not loop.last %}
-                            <div class="meal-separator"></div>
-                        {% endif %}
-                    {% endfor %}
+                    {% endif %}
                 </div>
-            </div>
+            </section>
         {% endfor %}
-    </div>
-    <div id="cookies-note" class="cookies-note">
+    </main>
+    
+    <aside id="cookies-note" class="cookies-note" role="complementary" aria-live="polite" aria-label="Privacy notice">
         <p>This site does not use cookies. This notification here is to tell you that. If you read this, say "yes" out loud.</p>
-        <button id="cookies-button" class="cookies-button">Got it!</button>
-    </div>
+        <button id="cookies-button" class="cookies-button" type="button" aria-label="Dismiss privacy notice">Got it!</button>
+    </aside>
+    
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 </body>
 </html>
