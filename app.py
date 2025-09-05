@@ -103,4 +103,5 @@ def index():
     return render_template('index.html', menus=menus, restaurant_names=restaurant_names, current_weekday=current_weekday, current_date=current_date, zip=zip)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    import os
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=False)
