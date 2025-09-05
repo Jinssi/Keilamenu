@@ -16,3 +16,10 @@ pip-delete-this-directory.txt
 .DS_Store
 *.log
 requirements-original.txt
+
+# Test files
+app_test.py
+test_accessibility.py
+
+# Temporary files
+tmp/
