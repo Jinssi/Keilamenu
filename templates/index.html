@@ -13,11 +13,21 @@
     
     <header class="header-container">
         <h1>DOWNSTAIRS TODAY</h1>
+        <div class="daily-theme" id="daily-theme">
+            <span class="emoji" id="theme-emoji">🍽️</span>
+            <span id="theme-text">Friday Feast</span>
+        </div>
         <div class="date-info" role="banner" aria-label="Current date and day">
             <time datetime="{{ current_date }}">
                 <span class="weekday">{{ current_weekday }}</span>,
                 <span class="date">{{ current_date }}</span>
             </time>
+        </div>
+        
+        <!-- Search bar -->
+        <div class="search-container">
+            <div class="search-icon">🔍</div>
+            <input type="text" id="search-input" class="search-input" placeholder="Search menu items...">
         </div>
     </header>
     
@@ -25,7 +35,7 @@
     
     <main id="main-content" class="container" role="main" aria-label="Restaurant lunch menus">
         {% for menu, name in zip(menus, restaurant_names) %}
-            <section class="menu" role="region" aria-labelledby="restaurant-{{ loop.index }}">
+            <section class="menu {% if 'ISS' in name %}iss-theme{% elif 'Sodexo' in name %}sodexo-theme{% elif 'Compass Group' in name %}compass-theme{% endif %}" role="region" aria-labelledby="restaurant-{{ loop.index }}" data-restaurant="{{ name }}">
                 <div class="logo-text-container">
                     <div class="logo-container">
                         {% if 'ISS' in name %}
@@ -37,23 +47,41 @@
                         {% endif %}
                     </div>
                     <div class="name-container">
-                        <h2 id="restaurant-{{ loop.index }}" class="restaurant-name">{{ name.split(' by ')[0] }}</h2>
-                        <p class="company-name">by {{ name.split(' by ')[1] }}</p>
+                        <div class="menu-header">
+                            <div>
+                                <h2 id="restaurant-{{ loop.index }}" class="restaurant-name">{{ name.split(' by ')[0] }}</h2>
+                                <p class="company-name">by {{ name.split(' by ')[1] }}</p>
+                            </div>
+                            <button class="menu-toggle" onclick="toggleMenu({{ loop.index0 }})" aria-label="Toggle menu">
+                                ▲
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div class="meal-list" role="list" aria-label="Menu items for {{ name }}">
-                    {% if menu %}
+                <div class="meal-list expanded" id="meal-list-{{ loop.index0 }}" role="list" aria-label="Menu items for {{ name }}">
+                    {% if menu and menu[0].name != 'Menu temporarily unavailable' %}
                         {% for meal in menu %}
-                            <div class="mealrow" role="listitem">
-                                <p>{{ meal.name | replace('\n', '<br>') | safe }}</p>
+                            <div class="mealrow" role="listitem" data-meal="{{ meal.name }}">
+                                <span class="meal-icon">🍽️</span>
+                                <div class="meal-content">
+                                    <div class="meal-name">{{ meal.name | replace('\n', '<br>') | safe }}</div>
+                                    <div class="meal-tags">
+                                        <!-- Dietary tags will be added by JavaScript -->
+                                    </div>
+                                </div>
+                                <button class="favorite-btn" onclick="toggleFavorite(this)" aria-label="Add to favorites">
+                                    ♡
+                                </button>
                             </div>
                             {% if not loop.last %}
                                 <div class="meal-separator" role="presentation" aria-hidden="true"></div>
                             {% endif %}
                         {% endfor %}
                     {% else %}
-                        <div class="mealrow" role="listitem">
-                            <p>No menu available for today</p>
+                        <div class="no-menu-message" role="listitem">
+                            <div class="no-menu-icon">🍽️</div>
+                            <div class="no-menu-text">No menu available today</div>
+                            <div class="no-menu-subtext">Check back later for today's delicious offerings!</div>
                         </div>
                     {% endif %}
                 </div>
