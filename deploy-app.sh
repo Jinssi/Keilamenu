@@ -66,13 +66,9 @@ az webapp up \
     --name "$APP_NAME" \
     --resource-group "$RESOURCE_GROUP" \
     --location "$LOCATION" \
-    --runtime "PYTHON:3.10" \
-    --sku P0V3 \
-    
-# `az webapp up` does not accept --startup-file on all platforms/versions.
-# Configure the startup file explicitly after deployment instead.
-echo_info "Configuring startup file for the app..."
-az webapp config set --resource-group "$RESOURCE_GROUP" --name "$APP_NAME" --startup-file "startup.sh"
+    --runtime "PYTHON:3.9" \
+    --sku S1 \
+    --startup-file startup.sh
 
 # Restore original requirements.txt
 if [ -f "requirements-original.txt" ]; then

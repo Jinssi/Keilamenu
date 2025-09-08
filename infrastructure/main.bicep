@@ -106,7 +106,7 @@ resource webApp 'Microsoft.Web/sites@2023-01-01' = {
           value: 'true'
         }
       ]
-      appCommandLine: 'startup.sh'
+      appCommandLine: 'bash /home/site/wwwroot/startup.sh'
     }
   }
 }
