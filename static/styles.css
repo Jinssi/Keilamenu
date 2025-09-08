@@ -35,6 +35,13 @@
 /* Root font size for better scaling */
 :root {
     font-size: 16px;
+    /* Restaurant accent colors */
+    --iss-accent: #2563eb;      /* Blue for ISS */
+    --sodexo-accent: #dc2626;   /* Red for Sodexo */
+    --compass-accent: #16a34a;  /* Green for Compass Group */
+    
+    /* Daily themes */
+    --theme-colors: #f59e0b, #8b5cf6, #06b6d4, #10b981, #f97316;
 }
 
 *,
@@ -70,6 +77,61 @@ body {
     margin-bottom: 1.25rem;
 }
 
+/* Daily theme header */
+.daily-theme {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    color: white;
+    border-radius: 2rem;
+    font-weight: 600;
+    font-size: 1.125rem;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.daily-theme .emoji {
+    font-size: 1.5rem;
+}
+
+/* Search container */
+.search-container {
+    margin: 2rem auto;
+    max-width: 500px;
+    position: relative;
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 2rem;
+    font-size: 1rem;
+    background-color: #ffffff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    font-size: 1.25rem;
+}
+
 h1 {
     font-family: 'Poppins', Arial, sans-serif;
     font-size: 3.5rem; /* Fixed size instead of viewport units */
@@ -79,13 +141,53 @@ h1 {
     font-weight: bold;
 }
 
-/* Make h2 (restaurant names) proper heading elements */
+/* Restaurant name styling with accent colors */
 h2.restaurant-name {
-    font-size: 1.75rem; /* Larger, fixed size */
-    margin-bottom: 0.625rem;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
     text-align: left;
-    color: #003d82; /* Darker blue for better contrast (4.6:1) */
     font-weight: bold;
+    transition: color 0.2s ease;
+}
+
+.menu.iss-theme h2.restaurant-name {
+    color: var(--iss-accent);
+}
+
+.menu.sodexo-theme h2.restaurant-name {
+    color: var(--sodexo-accent);
+}
+
+.menu.compass-theme h2.restaurant-name {
+    color: var(--compass-accent);
+}
+
+/* Menu toggle button */
+.menu-toggle {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    margin-left: auto;
+}
+
+.menu-toggle:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    transform: scale(1.1);
+}
+
+.menu-toggle.collapsed {
+    transform: rotate(180deg);
+}
+
+.menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
 }
 
 .date-info {
@@ -111,22 +213,56 @@ h2.restaurant-name {
 }
 
 .menu {
-    background-color: #f8f9fa; /* Light background for better contrast */
-    color: #1a1a1a; /* Dark text for AAA contrast */
-    border: 0.25rem solid #003d82; /* Darker blue border */
-    border-radius: 0.625rem;
-    padding: 1.25rem;
+    background-color: #ffffff;
+    color: #1a1a1a;
+    border: 3px solid #e5e7eb;
+    border-radius: 1rem;
+    padding: 1.5rem;
     width: 30%;
     min-width: 280px;
     text-align: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    position: relative;
+    overflow: hidden;
+}
+
+.menu:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.menu.iss-theme {
+    border-color: var(--iss-accent);
+}
+
+.menu.iss-theme:hover {
+    border-color: var(--iss-accent);
+    box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.2), 0 10px 10px -5px rgba(37, 99, 235, 0.1);
+}
+
+.menu.sodexo-theme {
+    border-color: var(--sodexo-accent);
+}
+
+.menu.sodexo-theme:hover {
+    border-color: var(--sodexo-accent);
+    box-shadow: 0 20px 25px -5px rgba(220, 38, 38, 0.2), 0 10px 10px -5px rgba(220, 38, 38, 0.1);
+}
+
+.menu.compass-theme {
+    border-color: var(--compass-accent);
+}
+
+.menu.compass-theme:hover {
+    border-color: var(--compass-accent);
+    box-shadow: 0 20px 25px -5px rgba(22, 163, 74, 0.2), 0 10px 10px -5px rgba(22, 163, 74, 0.1);
 }
 
 .menu:focus-within {
     outline: 3px solid #005ce6;
     outline-offset: 2px;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .logo-text-container {
@@ -163,21 +299,152 @@ h2.restaurant-name {
 }
 
 .meal-list {
-    background-color: #ffffff; /* White background */
+    background-color: #ffffff;
     padding: 1rem;
-    border-radius: 0.5rem;
-    border: 1px solid #e0e0e0;
+    border-radius: 0.75rem;
+    border: 1px solid #e5e7eb;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    overflow: hidden;
+}
+
+.meal-list.collapsed {
+    max-height: 0;
+    padding: 0 1rem;
+    opacity: 0;
+}
+
+.meal-list.expanded {
+    max-height: 1000px;
+    opacity: 1;
 }
 
 .mealrow {
-    color: #1a1a1a; /* Dark text for AAA contrast */
-    text-transform: uppercase;
-    margin-bottom: 0.75rem;
-    font-size: 0.9rem; /* Fixed size */
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
     max-width: 100%;
     margin-left: auto;
     margin-right: auto;
     font-weight: 500;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.mealrow:hover {
+    background-color: #f8fafc;
+    transform: translateX(4px);
+}
+
+.mealrow .meal-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.mealrow .meal-content {
+    flex: 1;
+    text-align: left;
+}
+
+.mealrow .meal-name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    text-transform: none;
+}
+
+.mealrow .meal-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+.dietary-tag {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.dietary-tag.vegan {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.dietary-tag.vegetarian {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.dietary-tag.gluten-free {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.favorite-btn {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    color: #6b7280;
+    transition: all 0.2s ease;
+}
+
+.favorite-btn:hover {
+    color: #ef4444;
+    transform: scale(1.2);
+}
+
+.favorite-btn.favorited {
+    color: #ef4444;
+}
+
+.chefs-pick {
+    position: relative;
+}
+
+.chefs-pick::before {
+    content: "👨‍🍳 Chef's Pick";
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    color: white;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+    font-weight: 600;
+    z-index: 1;
+}
+
+.no-menu-message {
+    text-align: center;
+    padding: 2rem;
+    color: #6b7280;
+}
+
+.no-menu-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.7;
+}
+
+.no-menu-text {
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.no-menu-subtext {
+    font-size: 0.875rem;
+    opacity: 0.8;
 }
 
 .meal-separator {
