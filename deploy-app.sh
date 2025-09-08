@@ -68,7 +68,7 @@ az webapp up \
     --location "$LOCATION" \
     --runtime "PYTHON:3.9" \
     --sku S1 \
-    --startup-file startup.sh
+    --startup-file "bash /home/site/wwwroot/startup.sh"
 
 # Restore original requirements.txt
 if [ -f "requirements-original.txt" ]; then
