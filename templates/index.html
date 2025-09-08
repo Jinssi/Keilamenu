@@ -13,21 +13,11 @@
     
     <header class="header-container">
         <h1>DOWNSTAIRS TODAY</h1>
-        <div class="daily-theme" id="daily-theme">
-            <span class="emoji" id="theme-emoji">🍽️</span>
-            <span id="theme-text">Friday Feast</span>
-        </div>
         <div class="date-info" role="banner" aria-label="Current date and day">
             <time datetime="{{ current_date }}">
                 <span class="weekday">{{ current_weekday }}</span>,
                 <span class="date">{{ current_date }}</span>
             </time>
-        </div>
-        
-        <!-- Search bar -->
-        <div class="search-container">
-            <div class="search-icon">🔍</div>
-            <input type="text" id="search-input" class="search-input" placeholder="Search menu items...">
         </div>
     </header>
     
@@ -52,7 +42,7 @@
                                 <h2 id="restaurant-{{ loop.index }}" class="restaurant-name">{{ name.split(' by ')[0] }}</h2>
                                 <p class="company-name">by {{ name.split(' by ')[1] }}</p>
                             </div>
-                            <button class="menu-toggle" onclick="toggleMenu({{ loop.index0 }})" aria-label="Toggle menu">
+                            <button class="menu-toggle" onclick="toggleMenu('{{ loop.index0 }}')" aria-label="Toggle menu">
                                 ▲
                             </button>
                         </div>
@@ -88,11 +78,6 @@
             </section>
         {% endfor %}
     </main>
-    
-    <aside id="cookies-note" class="cookies-note" role="complementary" aria-live="polite" aria-label="Privacy notice">
-        <p>This site does not use cookies. This notification here is to tell you that. If you read this, say "yes" out loud.</p>
-        <button id="cookies-button" class="cookies-button" type="button" aria-label="Dismiss privacy notice">Got it!</button>
-    </aside>
     
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 </body>

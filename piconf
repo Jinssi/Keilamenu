@@ -3,7 +3,7 @@ Description=Open Firefox at boot
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/firefox --kiosk https://keilamenu.azurewebsites.net
+ExecStart=/usr/bin/firefox --kiosk https://keilamenuu.azurewebsites.net
 ExecStop=/usr/bin/pkill firefox  
 SuccessAction=none 
 Type=simple

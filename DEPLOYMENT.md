@@ -46,7 +46,7 @@ This script will:
 ## Application Access
 
 After deployment, the application will be available at:
-- **Direct App Service URL**: https://keilamenu.azurewebsites.net
+- **Direct App Service URL**: https://keilamenuu.azurewebsites.net
 - **Application Gateway URL**: http://[gateway-public-ip]
 
 ## Infrastructure Components
@@ -60,7 +60,7 @@ After deployment, the application will be available at:
 ### Application Gateway Configuration
 - **SKU**: Standard_v2
 - **Autoscaling**: 1-3 instances
-- **Backend**: keilamenu.azurewebsites.net
+- **Backend**: keilamenuu.azurewebsites.net
 - **Health Probe**: HTTP health check
 
 ### Networking

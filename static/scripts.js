@@ -1,37 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    var cookiesButton = document.getElementById('cookies-button');
-    var cookiesNote = document.getElementById('cookies-note');
-    
-    // Enhanced keyboard accessibility for cookie notice
-    function dismissCookieNotice() {
-        cookiesNote.style.display = 'none';
-        cookiesNote.setAttribute('aria-hidden', 'true');
-        
-        // Focus management - move focus to main content after dismissal
-        var mainContent = document.getElementById('main-content');
-        if (mainContent) {
-            mainContent.focus();
-        }
-    }
-    
-    // Click event handler
-    cookiesButton.addEventListener('click', dismissCookieNotice);
-    
-    // Keyboard event handler for accessibility
-    cookiesButton.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            dismissCookieNotice();
-        }
-    });
-    
-    // Handle escape key to dismiss cookie notice
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && cookiesNote.style.display !== 'none') {
-            dismissCookieNotice();
-        }
-    });
-    
     // Skip link functionality
     var skipLink = document.querySelector('.skip-link');
     if (skipLink) {

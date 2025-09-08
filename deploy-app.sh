@@ -6,9 +6,9 @@
 set -e
 
 # Configuration
-APP_NAME="keilamenu"
+APP_NAME="keilamenuu"
 RESOURCE_GROUP="${APP_NAME}-rg"
-LOCATION="West Europe"
+LOCATION="Sweden Central"
 
 # Colors for output
 RED='\033[0;31m'
@@ -66,9 +66,13 @@ az webapp up \
     --name "$APP_NAME" \
     --resource-group "$RESOURCE_GROUP" \
     --location "$LOCATION" \
-    --runtime "PYTHON:3.9" \
-    --sku S1 \
-    --startup-file startup.sh
+    --runtime "PYTHON:3.10" \
+    --sku P0V3 \
+    
+# `az webapp up` does not accept --startup-file on all platforms/versions.
+# Configure the startup file explicitly after deployment instead.
+echo_info "Configuring startup file for the app..."
+az webapp config set --resource-group "$RESOURCE_GROUP" --name "$APP_NAME" --startup-file "startup.sh"
 
 # Restore original requirements.txt
 if [ -f "requirements-original.txt" ]; then
@@ -81,7 +85,7 @@ APP_URL="https://${APP_NAME}.azurewebsites.net"
 
 echo_info "Application deployed successfully!"
 echo_info "Application URL: $APP_URL"
-echo_info "DNS configured at: https://keilamenu.azurewebsites.net"
+echo_info "DNS configured at: https://keilamenuu.azurewebsites.net"
 
 # Test the deployment
 echo_info "Testing application endpoint..."

@@ -6,9 +6,9 @@
 set -e
 
 # Configuration
-APP_NAME="keilamenu"
+APP_NAME="keilamenuu"
 RESOURCE_GROUP="${APP_NAME}-rg"
-LOCATION="West Europe"
+LOCATION="Sweden Central"
 
 # Colors for output
 RED='\033[0;31m'

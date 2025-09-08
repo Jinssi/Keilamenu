@@ -1,6 +1,6 @@
 // Bicep template for Keilamenu Azure infrastructure
 @description('Base name for all resources')
-param appName string = 'keilamenu'
+param appName string = 'keilamenuu'
 
 @description('Location for all resources')
 param location string = resourceGroup().location
