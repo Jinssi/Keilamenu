@@ -8,7 +8,7 @@ set -e
 # Configuration
 APP_NAME="keilamenu"
 RESOURCE_GROUP="${APP_NAME}-rg"
-LOCATION="West Europe"
+LOCATION="Sweden South"
 SUBSCRIPTION_ID=""
 
 # Colors for output
