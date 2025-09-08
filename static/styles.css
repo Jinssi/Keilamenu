@@ -1,3 +1,4 @@
+/* Custom fonts disabled - using system fonts for better compatibility
 @font-face {
     font-family: 'GlacialIndifference';
     src: url('./fonts/GlacialIndifference-Bold.otf') format('opentype');
@@ -13,6 +14,7 @@
     font-style: normal;
     font-display: swap;
 }
+*/
 
 /* Skip link for keyboard navigation */
 .skip-link {
@@ -65,7 +67,7 @@
 body {
     background-color: #FFFFFF; /* Changed to white for better contrast */
     color: #1a1a1a; /* Changed to dark text for AAA contrast (15.4:1) */
-    font-family: 'GlacialIndifference', Arial, sans-serif;
+    font-family: 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
     margin: 0;
     padding: 1.25rem;
     text-align: center;
@@ -133,7 +135,7 @@ body {
 }
 
 h1 {
-    font-family: 'Poppins', Arial, sans-serif;
+    font-family: 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
     font-size: 3.5rem; /* Fixed size instead of viewport units */
     color: #1a1a1a; /* Dark text for AAA contrast */
     text-transform: uppercase;

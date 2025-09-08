@@ -1,6 +1,12 @@
 # Keilamenu - Daily Lunch Menu Aggregator
 
-![Keilamenu Interface](https://github.com/user-attachments/assets/d68aa0fb-5919-4170-9a01-b96e7b0b2c89)
+## Interface Previews
+
+### Light Theme
+![Keilamenu Light Theme](screenshots/keilamenu-light-theme.png)
+
+### Dark Theme  
+![Keilamenu Dark Theme](screenshots/keilamenu-dark-theme.png)
 
 Keilamenu is a Flask web application that aggregates and displays daily lunch menus from three downstairs restaurants: **FG by ISS**, **FoodHub by Sodexo**, and **Keila Cafe by Compass Group**. The application scrapes menu data from various sources and presents them in a clean, modern interface with search functionality and dietary preference indicators.
 
@@ -14,6 +20,7 @@ Keilamenu is a Flask web application that aggregates and displays daily lunch me
 - 📱 **Responsive Design**: Works on desktop and mobile devices
 - ♿ **Accessibility**: Screen reader friendly with proper ARIA labels
 - 🎨 **Daily Themes**: Dynamic themes that change based on the day of the week
+- 🌙 **Light & Dark Modes**: Automatic theme switching based on user's system preference
 
 ## Quick Start
 

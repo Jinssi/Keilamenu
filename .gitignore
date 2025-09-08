@@ -1,8 +1,10 @@
 *.png
+!static/*.png
+!screenshots/*.png
 .env
 *.ttf
 *.otf
-/screenshots
+# /screenshots - removed to allow documentation screenshots
 __pycache__/
 *.pyc
 *.pyo
