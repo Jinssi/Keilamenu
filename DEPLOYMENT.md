@@ -55,7 +55,7 @@ After deployment, the application will be available at:
 - **Runtime**: Python 3.9
 - **SKU**: S1 (Standard tier)
 - **Features**: Always On, HTTPS Only
-- **Startup Command**: `startup.sh`
+- **Startup Command**: `bash /home/site/wwwroot/startup.sh`
 
 ### Application Gateway Configuration
 - **SKU**: Standard_v2
