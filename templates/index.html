@@ -49,7 +49,7 @@
                     </div>
                 </div>
                 <div class="meal-list expanded" id="meal-list-{{ loop.index0 }}" role="list" aria-label="Menu items for {{ name }}">
-                    {% if menu and menu[0].name != 'Menu temporarily unavailable' %}
+                    {% if menu and menu[0].name != 'Menu temporarily unavailable' and menu[0].name != 'Restaurant not operational' %}
                         {% for meal in menu %}
                             <div class="mealrow" role="listitem" data-meal="{{ meal.name }}">
                                 <span class="meal-icon">🍽️</span>
@@ -67,6 +67,12 @@
                                 <div class="meal-separator" role="presentation" aria-hidden="true"></div>
                             {% endif %}
                         {% endfor %}
+                    {% elif menu and menu[0].name == 'Restaurant not operational' %}
+                        <div class="no-menu-message" role="listitem">
+                            <div class="no-menu-icon">🚫</div>
+                            <div class="no-menu-text">Restaurant not operational</div>
+                            <div class="no-menu-subtext">This restaurant is currently not serving meals</div>
+                        </div>
                     {% else %}
                         <div class="no-menu-message" role="listitem">
                             <div class="no-menu-icon">🍽️</div>

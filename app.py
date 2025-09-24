@@ -129,21 +129,25 @@ def index():
     for i, url in enumerate(urls):
         try:
             if 'sodexo' in url:
-                menu_data = scrape_sodexo(url)
+                # Skip Sodexo scraping - restaurant is not operational
+                menu_data = [{'name': 'Restaurant not operational'}]
             elif 'iss' in url:
                 menu_data = scrape_iss(url)
             elif 'compass-group' in url:
                 menu_data = scrape_compass(url)
             
-            # If scraping returns unavailable message, use sample data for demo
-            if menu_data and len(menu_data) == 1 and 'unavailable' in menu_data[0]['name'].lower():
+            # If scraping returns unavailable message, use sample data for demo (except for Sodexo)
+            if menu_data and len(menu_data) == 1 and 'unavailable' in menu_data[0]['name'].lower() and 'sodexo' not in url:
                 menu_data = sample_menus[i]
                 
             menus.append(menu_data)
         except Exception as e:
             print(f"Error processing {url}: {e}")
-            # Use sample data on error
-            menus.append(sample_menus[i] if i < len(sample_menus) else [{'name': 'Menu temporarily unavailable'}])
+            # Use sample data on error (except for Sodexo which should remain non-operational)
+            if 'sodexo' in url:
+                menus.append([{'name': 'Restaurant not operational'}])
+            else:
+                menus.append(sample_menus[i] if i < len(sample_menus) else [{'name': 'Menu temporarily unavailable'}])
     
     restaurant_names = ['FG by ISS', 'FoodHub by Sodexo', 'Keila Cafe by Compass Group']
     
