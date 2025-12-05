@@ -29,6 +29,7 @@ Thumbs.db
 !static/fonts/*.ttf
 !static/fonts/*.otf
 
-# Images (allow only static)
+# Images (allow only static and root screenshot)
 *.png
 !static/*.png
+!screenshot.png
