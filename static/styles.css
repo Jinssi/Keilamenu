@@ -1,0 +1,207 @@
+@font-face {
+    font-family: 'GlacialIndifference';
+    src: url('./fonts/GlacialIndifference-Bold.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('./fonts/Poppins-Medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #0f0f12;
+    color: #f8f8f8;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    padding: 32px 20px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.app {
+    width: 100%;
+}
+
+.hero {
+    text-align: center;
+    line-height: 1.5;
+}
+
+.hero h1 {
+    font-family: 'GlacialIndifference', sans-serif;
+    font-size: clamp(2.5rem, 12vw, 4.5rem);
+    color: #ff003c;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0;
+    font-weight: bold;
+}
+
+/* Restaurant name styling with accent colors */
+h2.restaurant-name {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    text-align: left;
+    font-weight: bold;
+    transition: color 0.2s ease;
+}
+
+.menu.iss-theme h2.restaurant-name {
+    color: var(--iss-accent);
+}
+
+.menu.sodexo-theme h2.restaurant-name {
+    color: var(--sodexo-accent);
+}
+
+.menu.compass-theme h2.restaurant-name {
+    color: var(--compass-accent);
+}
+
+/* Menu toggle button */
+.menu-toggle {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    margin-left: auto;
+}
+
+.menu-toggle:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    transform: scale(1.1);
+}
+
+.menu-toggle.collapsed {
+    transform: rotate(180deg);
+}
+
+.menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.date-label {
+    font-size: clamp(1rem, 4vw, 1.5rem);
+    color: #d7d7dd;
+    margin-top: 0.6rem;
+}
+
+.menus {
+    width: min(1100px, 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.menu-card {
+    background-color: #df002a;
+    border: 4px solid #a2d2ff;
+    border-radius: 8px;
+    padding: 28px 22px;
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    text-align: left;
+}
+
+.menu-heading {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.logo-wrap {
+    width: 86px;
+    height: 86px;
+    border-radius: 50%;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    align-self: flex-start;
+    position: relative;
+    left: -3px;
+    top: -3px;
+    overflow: hidden;
+}
+
+.logo {
+    width: calc(100% - 6px);
+    height: calc(100% - 6px);
+    object-fit: contain;
+}
+
+.restaurant-title {
+    font-family: 'GlacialIndifference', sans-serif;
+    font-size: clamp(1.35rem, 6vw, 2.1rem);
+    margin: 0;
+    text-transform: none;
+}
+
+.menu-items {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.menu-item {
+    font-family: 'GlacialIndifference', sans-serif;
+    font-size: clamp(1rem, 4vw, 1.4rem);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+    line-height: 1.35;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.menu-label {
+    color: #a2d2ff;
+    font-family: 'GlacialIndifference', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.menu-description {
+    font-family: 'Poppins', sans-serif;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 500;
+}
+
+@media (min-width: 720px) {
+    body {
+        padding-top: 48px;
+    }
+
+    .menu-heading {
+        gap: 24px;
+    }
+
+    .menu-items {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: 48px;
+    }
+}

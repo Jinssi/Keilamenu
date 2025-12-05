@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Daily lunch menus from three restaurants downstairs: FG by ISS, FoodHub by Sodexo, and Keila Cafe by Compass Group">
+    <title>DOWNSTAIRS TODAY - Daily Lunch Menus</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="app">
+    <header class="hero">
+        <h1>DOWNSTAIRS TODAY</h1>
+        <p class="date-label">{{ current_weekday }} {{ current_date }}</p>
+    </header>
+
+    <main class="menus">
+        {% for menu, name in zip(menus, restaurant_names) %}
+            {% set name_parts = name.split(' by ') %}
+            {% set restaurant = name_parts[0] %}
+            <section class="menu-card">
+                <div class="menu-heading">
+                    <div class="logo-wrap">
+                        {% if 'ISS' in name %}
+                            <img src="{{ url_for('static', filename='isslogo.png') }}" alt="ISS logo" class="logo">
+                        {% elif 'Nest' in name %}
+                            <img src="{{ url_for('static', filename='nest.png') }}" alt="Nest logo" class="logo">
+                        {% elif 'Compass' in name %}
+                            <img src="{{ url_for('static', filename='compassgrouplogo.png') }}" alt="Compass Group logo" class="logo">
+                        {% endif %}
+                    </div>
+                    <p class="restaurant-title">{{ restaurant }}</p>
+                </div>
+                <div class="menu-items" role="list">
+                    {% if restaurant.lower().startswith('cafe') %}
+                        <div class="menu-item" role="listitem">
+                            <span class="menu-label">Nordic Buffet</span>
+                        </div>
+                    {% endif %}
+                    {% for meal in menu %}
+                        <div class="menu-item" role="listitem">
+                            {% if meal.label is defined %}
+                                <span class="menu-label">{{ meal.label }}</span>
+                                {% if meal.description %}
+                                    <span class="menu-description">{{ meal.description }}</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="menu-description">{{ meal.name | replace('\n', '<br>') | safe }}</span>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="menu-item" role="listitem">Menu will be updated shortly.</div>
+                    {% endfor %}
+                </div>
+            </section>
+            </section>
+        {% endfor %}
+    </main>
+</body>
+</html>
