@@ -6,14 +6,14 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-FINNISH_WEEKDAYS = [
-    "Maanantai",
-    "Tiistai",
-    "Keskiviikko",
-    "Torstai",
-    "Perjantai",
-    "Lauantai",
-    "Sunnuntai",
+ENGLISH_WEEKDAYS = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
 ]
 
 def scrape_iss(url):
@@ -57,10 +57,10 @@ def scrape_iss(url):
 
 def scrape_nest():
     current_weekday_index = datetime.today().weekday()
-    finnish_weekday = FINNISH_WEEKDAYS[current_weekday_index]
+    english_weekday = ENGLISH_WEEKDAYS[current_weekday_index]
     try:
         response = requests.get(
-            "https://www.nest-restaurant.fi/",
+            "https://www.nest-restaurant.fi/en",
             timeout=12,
         )
         response.raise_for_status()
@@ -79,7 +79,7 @@ def scrape_nest():
         if not name_el:
             continue
         section_name = name_el.get_text(strip=True)
-        if not section_name.startswith(finnish_weekday):
+        if not section_name.startswith(english_weekday):
             continue
 
         for item in section.select('[data-hook="item.container"]'):
