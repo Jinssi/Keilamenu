@@ -44,14 +44,13 @@
                                     <span class="menu-description">{{ meal.description }}</span>
                                 {% endif %}
                             {% else %}
-                                <span class="menu-description">{{ meal.name | replace('\n', '<br>') | safe }}</span>
+                                <span class="menu-description menu-description--multiline">{{ meal.name }}</span>
                             {% endif %}
                         </div>
                     {% else %}
                         <div class="menu-item" role="listitem">Menu will be updated shortly.</div>
                     {% endfor %}
                 </div>
-            </section>
             </section>
         {% endfor %}
     </main>

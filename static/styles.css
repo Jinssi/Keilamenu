@@ -191,6 +191,10 @@ h2.restaurant-name {
     font-weight: 500;
 }
 
+.menu-description--multiline {
+    white-space: pre-line;
+}
+
 @media (min-width: 720px) {
     body {
         padding-top: 48px;

@@ -17,7 +17,7 @@ ENGLISH_WEEKDAYS = [
 ]
 
 def scrape_iss(url):
-    response = requests.get(url)
+    response = requests.get(url, timeout=10)
     soup = BeautifulSoup(response.content, 'html.parser')
     meals = []
     
@@ -101,6 +101,7 @@ def scrape_nest():
 def scrape_compass(url):
     try:
         response = requests.get(url, timeout=10)
+        response.raise_for_status()
         soup = BeautifulSoup(response.content, 'html.parser')
         meals = []
         # Find the item tag in the RSS feed
@@ -121,7 +122,7 @@ def scrape_compass(url):
                     if line:
                         meals.append({'name': line})
         return meals
-    except Exception as e:
+    except requests.RequestException as e:
         print(f"Error scraping Compass: {e}")
         return [{'name': 'Menu temporarily unavailable'}]
 
