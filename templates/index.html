@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ current_lang }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Daily lunch menus from three restaurants downstairs: FG by ISS, FoodHub by Sodexo, and Keila Cafe by Compass Group">
+    <meta name="description" content="Daily lunch menus from three restaurants downstairs: FG by ISS, Nest Restaurant, and Cafe Keilalahti by Compass Group">
     <title>DOWNSTAIRS TODAY - Daily Lunch Menus</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
@@ -11,13 +11,25 @@
     <header class="hero">
         <h1>DOWNSTAIRS TODAY</h1>
         <p class="date-label">{{ current_weekday }} {{ current_date }}</p>
+        
+        {% if feature_language_selector %}
+        <!-- Language Selector -->
+        <div class="language-selector">
+            {% for code, name in supported_languages.items() %}
+                <a href="?lang={{ code }}" 
+                   class="lang-btn {% if code == current_lang %}active{% endif %}"
+                   title="{{ name }}">{{ code.upper() }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
     </header>
 
     <main class="menus">
-        {% for menu, name in zip(menus, restaurant_names) %}
+        {% for menu, name, restaurant_id in zip(menus, restaurant_names, restaurant_ids) %}
             {% set name_parts = name.split(' by ') %}
             {% set restaurant = name_parts[0] %}
-            <section class="menu-card">
+            {% set restaurant_ratings = ratings.get(restaurant_id, {}) %}
+            <section class="menu-card" data-restaurant-id="{{ restaurant_id }}">
                 <div class="menu-heading">
                     <div class="logo-wrap">
                         {% if 'ISS' in name %}
@@ -32,21 +44,56 @@
                 </div>
                 <div class="menu-items" role="list">
                     {% if restaurant.lower().startswith('cafe') %}
-                        <div class="menu-item" role="listitem">
-                            <span class="menu-label">Nordic Buffet</span>
+                        {% set buffet_rating = restaurant_ratings.get('Nordic Buffet', {}) %}
+                        <div class="menu-item" role="listitem" data-meal-name="Nordic Buffet">
+                            <span class="menu-label">Nordic Buffet
+                                {% if feature_ratings %}
+                                <span class="rating-buttons">
+                                    <button class="rate-btn rate-up" data-rating="1" title="Like">👍<span class="count">{{ buffet_rating.get('up', 0) or '' }}</span></button>
+                                    <button class="rate-btn rate-down" data-rating="-1" title="Dislike">👎<span class="count">{{ buffet_rating.get('down', 0) or '' }}</span></button>
+                                </span>
+                                {% endif %}
+                            </span>
                         </div>
                     {% endif %}
                     {% for meal in menu %}
-                        <div class="menu-item" role="listitem">
-                            {% if meal.label is defined %}
-                                <span class="menu-label">{{ meal.label }}</span>
-                                {% if meal.description %}
-                                    <span class="menu-description">{{ meal.description }}</span>
-                                {% endif %}
-                            {% else %}
+                        {% set meal_name = meal.description if meal.description is defined else meal.name %}
+                        {% set meal_rating = restaurant_ratings.get(meal_name, {}) %}
+                        {% set is_top_pick = top_pick and top_pick.restaurant_id == restaurant_id and top_pick.meal_name == meal_name %}
+                        {% if restaurant.lower().startswith('cafe') %}
+                            {# Cafe Keilalahti: show items without individual ratings #}
+                            <div class="menu-item" role="listitem">
                                 <span class="menu-description menu-description--multiline">{{ meal.name }}</span>
-                            {% endif %}
-                        </div>
+                            </div>
+                        {% else %}
+                            <div class="menu-item {% if feature_ratings and is_top_pick %}top-pick{% endif %}" role="listitem" data-meal-name="{{ meal_name }}">
+                                {% if feature_ratings and is_top_pick %}
+                                    <span class="top-pick-badge">🏆 Top Pick</span>
+                                {% endif %}
+                                {% if meal.label is defined %}
+                                    <span class="menu-label">{{ meal.label }}
+                                        {% if feature_ratings %}
+                                        <span class="rating-buttons">
+                                            <button class="rate-btn rate-up" data-rating="1" title="Like">👍<span class="count">{{ meal_rating.get('up', 0) or '' }}</span></button>
+                                            <button class="rate-btn rate-down" data-rating="-1" title="Dislike">👎<span class="count">{{ meal_rating.get('down', 0) or '' }}</span></button>
+                                        </span>
+                                        {% endif %}
+                                    </span>
+                                    {% if meal.description %}
+                                        <span class="menu-description">{{ meal.description }}</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="menu-description menu-description--multiline">{{ meal.name }}
+                                        {% if feature_ratings %}
+                                        <span class="rating-buttons">
+                                            <button class="rate-btn rate-up" data-rating="1" title="Like">👍<span class="count">{{ meal_rating.get('up', 0) or '' }}</span></button>
+                                            <button class="rate-btn rate-down" data-rating="-1" title="Dislike">👎<span class="count">{{ meal_rating.get('down', 0) or '' }}</span></button>
+                                        </span>
+                                        {% endif %}
+                                    </span>
+                                {% endif %}
+                            </div>
+                        {% endif %}
                     {% else %}
                         <div class="menu-item" role="listitem">Menu will be updated shortly.</div>
                     {% endfor %}
@@ -54,5 +101,47 @@
             </section>
         {% endfor %}
     </main>
+
+    {% if feature_ratings %}
+    <script>
+        // Rating button click handler
+        document.querySelectorAll('.rate-btn').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const menuItem = this.closest('.menu-item');
+                const menuCard = this.closest('.menu-card');
+                const mealName = menuItem.dataset.mealName;
+                const restaurantId = menuCard.dataset.restaurantId;
+                const rating = parseInt(this.dataset.rating);
+
+                try {
+                    const response = await fetch('/api/rate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            restaurant_id: restaurantId,
+                            meal_name: mealName,
+                            rating: rating
+                        })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        // Update the counts
+                        const upBtn = menuItem.querySelector('.rate-up .count');
+                        const downBtn = menuItem.querySelector('.rate-down .count');
+                        if (upBtn) upBtn.textContent = data.ratings.up;
+                        if (downBtn) downBtn.textContent = data.ratings.down;
+                        
+                        // Visual feedback
+                        this.classList.add('voted');
+                        setTimeout(() => this.classList.remove('voted'), 300);
+                    }
+                } catch (err) {
+                    console.error('Rating failed:', err);
+                }
+            });
+        });
+    </script>
+    {% endif %}
 </body>
 </html>

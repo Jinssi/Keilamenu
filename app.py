@@ -1,10 +1,39 @@
-from flask import Flask, render_template
+import os
+from flask import Flask, render_template, request, jsonify
+from dotenv import load_dotenv
 import requests
 import re
 from bs4 import BeautifulSoup
 from datetime import datetime
 
+# Load environment variables from .env file
+load_dotenv()
+
+# Feature toggles
+FEATURE_LANGUAGE_SELECTOR = os.getenv('FEATURE_LANGUAGE_SELECTOR', 'false').lower() == 'true'
+FEATURE_RATINGS = os.getenv('FEATURE_RATINGS', 'false').lower() == 'true'
+
+from services.translator import (
+    translate_menu, 
+    parse_accept_language, 
+    SUPPORTED_LANGUAGES,
+    DEFAULT_LANGUAGE
+)
+from services.database import (
+    init_db,
+    add_rating,
+    get_ratings_summary,
+    get_top_pick
+)
+
 app = Flask(__name__)
+
+# Restaurant ID mapping for database operations
+RESTAURANT_IDS = {
+    'ISS FG by ISS': 'iss',
+    'Nest by Nest Restaurant': 'nest',
+    'Cafe Keilalahti by Compass Group': 'compass'
+}
 
 ENGLISH_WEEKDAYS = [
     "Monday",
@@ -22,20 +51,82 @@ def scrape_iss(url):
     meals = []
     
     # Find the English section by looking for the h2 element with text starting with "Week"
-    english_section = soup.find('h2', class_='lunch-menu__title multiple js-lunch-menu-toggle', text=lambda t: t and t.startswith('Week'))
+    english_section = soup.find('h2', class_='lunch-menu__title multiple js-lunch-menu-toggle', string=lambda t: t and t.startswith('Week'))
     if english_section:
         # Get the parent article of the English section
         english_menu = english_section.find_next('article', class_='lunch-menu')
         if english_menu:
-            # Get the current day of the week (0=Monday, 6=Sunday)
             current_day_index = datetime.now().weekday()
-            if current_day_index < 5:  # Only consider weekdays
-                meal_days = english_menu.find_all('div', class_='lunch-menu__day')
-                current_day = meal_days[current_day_index]
-                meal_items = current_day.find_all('p')
+            current_day_name = ENGLISH_WEEKDAYS[current_day_index].lower() if current_day_index < 7 else None
+            
+            if current_day_index >= 5:  # Weekend
+                return meals
+            
+            # Find the correct day section by matching day name in header
+            meal_days = english_menu.find_all('div', class_='lunch-menu__day')
+            target_day = None
+            
+            for day_div in meal_days:
+                # Look for day header (h3 or strong element containing day name)
+                day_header = day_div.find(['h3', 'strong', 'b'])
+                if day_header:
+                    header_text = day_header.get_text(strip=True).lower()
+                    if current_day_name in header_text:
+                        target_day = day_div
+                        break
+            
+            # Fallback to index-based if name matching fails
+            if not target_day and current_day_index < len(meal_days):
+                target_day = meal_days[current_day_index]
+            
+            # SPECIAL CASE: If it's Friday and we couldn't find Friday section,
+            # look for Friday data embedded in Thursday's section (data corruption recovery)
+            search_within_previous_day = False
+            if not target_day and current_day_index == 4:  # Friday
+                # Try to find Thursday's section and extract Friday from it
+                for day_div in meal_days:
+                    day_header = day_div.find(['h3', 'strong', 'b'])
+                    if day_header and 'thursday' in day_header.get_text(strip=True).lower():
+                        target_day = day_div
+                        search_within_previous_day = True
+                        break
+                # Or use index 3 (Thursday) as fallback
+                if not target_day and len(meal_days) > 3:
+                    target_day = meal_days[3]
+                    search_within_previous_day = True
+            
+            if target_day:
+                meal_items = target_day.find_all('p')
+                collecting = not search_within_previous_day  # Start collecting immediately unless searching for embedded day
+                
                 for item in meal_items:
                     meal_text = item.get_text(strip=True)
                     if not meal_text:
+                        continue
+                    
+                    # If searching within previous day's section for current day's data
+                    if search_within_previous_day:
+                        # Start collecting when we see current day's name
+                        if current_day_name in meal_text.lower():
+                            collecting = True
+                            continue  # Skip the day header line itself
+                        if not collecting:
+                            continue
+                    
+                    # Stop if we hit the next day's header
+                    next_day_index = current_day_index + 1
+                    if next_day_index < 5:  # There's a next weekday
+                        next_day_name = ENGLISH_WEEKDAYS[next_day_index].lower()
+                        if next_day_name in meal_text.lower():
+                            break
+                    
+                    # Also stop if we hit a different day header (general case)
+                    text_lower = meal_text.lower()
+                    is_day_header = any(day.lower() in text_lower and len(meal_text) < 20 
+                                       for day in ENGLISH_WEEKDAYS[:5])
+                    if is_day_header and current_day_name not in text_lower:
+                        if not search_within_previous_day:
+                            break
                         continue
 
                     if ':' in meal_text:
@@ -128,19 +219,29 @@ def scrape_compass(url):
 
 @app.route('/')
 def index():
+    # Get user's preferred language from header or query param
+    lang = request.args.get('lang')
+    if not lang:
+        lang = parse_accept_language(request.headers.get('Accept-Language', ''))
+    if lang not in SUPPORTED_LANGUAGES:
+        lang = DEFAULT_LANGUAGE
+
     restaurants = [
         {
             'name': 'ISS FG by ISS',
+            'id': 'iss',
             'scraper': scrape_iss,
             'url': 'https://fg.ravintolapalvelut.iss.fi/'
         },
         {
             'name': 'Nest by Nest Restaurant',
+            'id': 'nest',
             'scraper': scrape_nest,
             'url': None
         },
         {
             'name': 'Cafe Keilalahti by Compass Group',
+            'id': 'compass',
             'scraper': scrape_compass,
             'url': 'https://www.compass-group.fi/menuapi/feed/rss/current-day?costNumber=3283&language=en'
         }
@@ -148,12 +249,27 @@ def index():
 
     menus = []
     restaurant_names = []
+    restaurant_ids = []
+    all_ratings = {}
+    
     for restaurant in restaurants:
         scraper = restaurant['scraper']
         url = restaurant.get('url')
         menu = scraper(url) if url else scraper()
+        
+        # Translate menu if needed
+        if lang != DEFAULT_LANGUAGE:
+            menu = translate_menu(menu, lang)
+        
         menus.append(menu)
         restaurant_names.append(restaurant['name'])
+        restaurant_ids.append(restaurant['id'])
+        
+        # Get ratings for this restaurant
+        all_ratings[restaurant['id']] = get_ratings_summary(restaurant['id'])
+
+    # Get today's top pick
+    top_pick = get_top_pick()
 
     current_weekday = datetime.today().strftime('%A')
     current_date = datetime.now().strftime('%d.%m.%Y')
@@ -162,11 +278,75 @@ def index():
         'index.html',
         menus=menus,
         restaurant_names=restaurant_names,
+        restaurant_ids=restaurant_ids,
+        ratings=all_ratings,
+        top_pick=top_pick,
         current_weekday=current_weekday,
         current_date=current_date,
+        current_lang=lang,
+        supported_languages=SUPPORTED_LANGUAGES,
+        feature_language_selector=FEATURE_LANGUAGE_SELECTOR,
+        feature_ratings=FEATURE_RATINGS,
         zip=zip,
     )
 
+
+@app.route('/api/rate', methods=['POST'])
+def rate_meal():
+    """
+    Submit a rating for a meal.
+    Expects JSON: {"restaurant_id": "iss", "meal_name": "Chicken Tikka", "rating": 1}
+    rating: 1 for thumbs up, -1 for thumbs down
+    """
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'Invalid JSON'}), 400
+    
+    restaurant_id = data.get('restaurant_id')
+    meal_name = data.get('meal_name')
+    rating = data.get('rating')
+    
+    if not all([restaurant_id, meal_name, rating is not None]):
+        return jsonify({'error': 'Missing required fields'}), 400
+    
+    if rating not in (-1, 1):
+        return jsonify({'error': 'Rating must be 1 or -1'}), 400
+    
+    if restaurant_id not in ['iss', 'nest', 'compass']:
+        return jsonify({'error': 'Invalid restaurant_id'}), 400
+    
+    success = add_rating(restaurant_id, meal_name, rating)
+    if success:
+        # Return updated ratings for this restaurant
+        updated_ratings = get_ratings_summary(restaurant_id)
+        return jsonify({
+            'success': True,
+            'ratings': updated_ratings.get(meal_name, {'up': 0, 'down': 0, 'score': 0})
+        })
+    else:
+        return jsonify({'error': 'Database not available'}), 503
+
+
+@app.route('/api/ratings/<restaurant_id>')
+def get_restaurant_ratings(restaurant_id):
+    """Get all ratings for a restaurant."""
+    if restaurant_id not in ['iss', 'nest', 'compass']:
+        return jsonify({'error': 'Invalid restaurant_id'}), 400
+    
+    ratings = get_ratings_summary(restaurant_id)
+    return jsonify(ratings)
+
+
+@app.route('/api/top-pick')
+def api_top_pick():
+    """Get today's top-rated meal."""
+    top = get_top_pick()
+    if top:
+        return jsonify(top)
+    return jsonify({'message': 'No ratings yet today'}), 404
+
 if __name__ == '__main__':
     import os
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=False)
+    # Initialize database on startup
+    init_db()
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)
